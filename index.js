@@ -1,40 +1,25 @@
-(function () {
-  var cluster = require("cluster");
-  if (cluster.isMaster) {
-    return (
-      cluster.fork() &&
-      cluster.on("exit", function () {
-        cluster.fork();
-      })
-    );
-  }
+console.log(
+  "If module not found, install express globally `npm i express -g`!"
+);
+var port =
+  process.env.OPENSHIFT_NODEJS_PORT ||
+  process.env.VCAP_APP_PORT ||
+  process.env.PORT ||
+  process.argv[2] ||
+  8765;
+var express = require("express");
+var Gun = require("gun");
+require("gun/axe");
+var cors = require("cors");
 
-  var fs = require("fs");
-  var config = {
-    port:
-      process.env.OPENSHIFT_NODEJS_PORT ||
-      process.env.VCAP_APP_PORT ||
-      process.env.PORT ||
-      process.argv[2] ||
-      8765,
-    peers: (process.env.PEERS && process.env.PEERS.split(",")) || [],
-  };
-  var Gun = require("gun"); // require('gun')
+var app = express();
+app.use(Gun.serve);
+app.use(cors());
 
-  if (process.env.HTTPS_KEY) {
-    config.key = fs.readFileSync(process.env.HTTPS_KEY);
-    config.cert = fs.readFileSync(process.env.HTTPS_CERT);
-    config.server = require("https").createServer(config, Gun.serve(__dirname));
-  } else {
-    config.server = require("http").createServer(Gun.serve(__dirname));
-  }
+var server = app.listen(port);
+var gun = Gun({ file: "data", web: server, peers: [...process.env.PEERS] });
 
-  var gun = Gun({
-    web: config.server.listen(config.port),
-    peers: config.peers,
-  });
+global.Gun = Gun; /// make global to `node --inspect` - debug only
+global.gun = gun; /// make global to `node --inspect` - debug only
 
-  console.log("Relay peer started on port " + config.port + " with /gun");
-
-  module.exports = gun;
-})();
+console.log("Server started on port " + port + " with /gun");

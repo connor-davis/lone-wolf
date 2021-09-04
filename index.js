@@ -13,7 +13,7 @@ require("gun/axe");
 var cors = require("cors");
 
 var app = express();
-app.use(Gun.serve);
+app.use(Gun.serve());
 app.use(cors());
 
 var server = app.listen(port);

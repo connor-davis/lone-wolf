@@ -17,7 +17,11 @@ app.use(Gun.serve);
 app.use(cors());
 
 var server = app.listen(port);
-var gun = Gun({ file: "data", web: server, peers: [...process.env.PEERS] });
+var gun = Gun({
+  file: "data",
+  web: server,
+  peers: process.env.PEERS ? process.env.PEERS.split(",") : [],
+});
 
 global.Gun = Gun; /// make global to `node --inspect` - debug only
 global.gun = gun; /// make global to `node --inspect` - debug only

@@ -12,13 +12,14 @@ var Gun = require("..");
 require("../axe");
 
 var app = express();
+var http = require("http").createServer(app);
 var cors = require("cors");
 
 app.use(Gun.serve);
 app.use(express.static(__dirname));
 app.use(cors());
 
-var server = app.listen(port);
+var server = http.listen(port);
 var gun = Gun({ file: "data", web: server });
 
 global.Gun = Gun; /// make global to `node --inspect` - debug only

@@ -9,7 +9,7 @@ var port =
   8765;
 var express = require("express");
 var Gun = require("gun");
-require("gun/axe");
+// require("gun/axe");
 var cors = require("cors");
 
 var app = express();
@@ -22,6 +22,7 @@ var gun = Gun({
   file: "data",
   web: server,
   peers: process.env.PEERS ? process.env.PEERS.split(",") : [],
+  axe: false
 });
 
 global.Gun = Gun; /// make global to `node --inspect` - debug only

@@ -1,56 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+  </head>
+  <body>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Live Data</title>
-</head>
-
-<body>
-    <input id="syncData" onchange="syncChange(this.value)" placeholder="Type something to sync" />
-
-    <div id="status"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gun/axe.js"></script>
-    <script>
-        // var Gun = require('gun'); // in NodeJS
-        // var Gun = require('gun/gun'); // in React
-        let gun = Gun();
-
-        let syncData = gun.get('syncData');
-        let syncDataInput = document.getElementById('syncData');
-        let statusText = document.getElementById('status');
-
-        let user = gun.user().recall({ sessionStorage: true });
-
-        //user.create("tester", "testerpass")
-        user.auth("tester", "testerpass")
-
-        gun.user('DP0tMmfmDFsRfnCKRSuq0NHackltQrb-GDqeU59sYOc.f96Tkv1fz9I_bXFQ0gKW1wZD8EeKPbKUR96dOXUy2cc').once((data, key) => {
-            statusText.innerHTML = data['alias'] + " is " + data['status'];
-        })
-
-        gun.get('~LWefO6-H_9dYVQJeotOPb73KJHe6Z7LD4qdh8L6HcDo.5epB_Nqh-b7xO1O5SyXiECnFeLiS9cih8DK3giyMu-U').get('friendRequestsCertificate').once((certificate, key) => {
-            gun.get('~LWefO6-H_9dYVQJeotOPb73KJHe6Z7LD4qdh8L6HcDo.5epB_Nqh-b7xO1O5SyXiECnFeLiS9cih8DK3giyMu-U').get('friendRequests').set('LWefO6-H_9dYVQJeotOPb73KJHe6Z7LD4qdh8L6HcDo.5epB_Nqh-b7xO1O5SyXiECnFeLiS9cih8DK3giyMu-U', null, { opt: { cert: certificate } })
-        })
-
-        if (syncDataInput instanceof HTMLInputElement) {
-            gun.get('syncData').on((data, key) => {
-                console.log(data);
-
-                syncDataInput.value = data['sync']
-            })
-
-            function syncChange(value) {
-                console.log(value);
-                syncData.put({ sync: value })
-            }
-        }
-    </script>
-</body>
-
+  </body>
 </html>
